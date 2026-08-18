@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Bell, Bot, ChevronDown, ChevronRight, Command, HelpCircle, Menu, Search,
@@ -34,7 +34,7 @@ function CommandPalette({ onClose }: { onClose: () => void }) {
       <motion.div className="command-palette" initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} onMouseDown={(e) => e.stopPropagation()}>
         <div className="palette-search"><Search size={18} /><input ref={inputRef} value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search employees, roles, skills, mentors..." aria-label="Search CoreAlign" /><span>ESC</span></div>
         <div className="palette-results">
-          {filtered.length ? filtered.map((item) => <Link key={`${item.group}-${item.label}`} href={item.href} onClick={onClose}><div><small>{item.group}</small><strong>{item.label}</strong></div><ChevronRight size={16} /></Link>) : <div className="empty-inline">No matching talent intelligence found.</div>}
+          {filtered.length ? filtered.map((item) => <Link prefetch={false} key={`${item.group}-${item.label}`} href={item.href} onClick={(event) => { event.preventDefault(); onClose(); window.location.assign(item.href); }}><div><small>{item.group}</small><strong>{item.label}</strong></div><ChevronRight size={16} /></Link>) : <div className="empty-inline">No matching talent intelligence found.</div>}
         </div>
         <div className="palette-footer"><span><Command size={12} /> K to open</span><span>↑↓ navigate · Enter select</span></div>
       </motion.div>
@@ -44,7 +44,6 @@ function CommandPalette({ onClose }: { onClose: () => void }) {
 
 export function AppShell() {
   const pathname = usePathname();
-  const router = useRouter();
   const parts = pathname.split("/").filter(Boolean);
   const portal = (parts[0] || "employee") as Portal;
   const section = parts.slice(1).join("/") || "overview";
@@ -68,17 +67,17 @@ export function AppShell() {
   return (
     <div className={`app-shell ${collapsed ? "sidebar-collapsed" : ""}`}>
       <aside className={`sidebar ${mobileNav ? "mobile-open" : ""}`}>
-        <div className="sidebar-brand"><Link href="/">CoreAlign</Link><button className="collapse-button" onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}>{collapsed ? <SidebarOpen size={17} /> : <SidebarClose size={17} />}</button></div>
+        <div className="sidebar-brand"><Link prefetch={false} href="/" onClick={(event) => { event.preventDefault(); window.location.assign("/"); }}>CoreAlign</Link><button className="collapse-button" onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}>{collapsed ? <SidebarOpen size={17} /> : <SidebarClose size={17} />}</button></div>
         <div className="role-switcher">
           <button><span>{portal === "employee" ? "Employee" : portal === "manager" ? "Manager" : "HR / Talent"}</span><ChevronDown size={15} /></button>
           <div className="role-menu">
-            <button onClick={() => router.push("/employee")}>Employee</button>
-            <button onClick={() => router.push("/manager")}>Manager</button>
-            <button onClick={() => router.push("/hr")}>HR / Talent</button>
+            <button onClick={() => window.location.assign("/employee")}>Employee</button>
+            <button onClick={() => window.location.assign("/manager")}>Manager</button>
+            <button onClick={() => window.location.assign("/hr")}>HR / Talent</button>
           </div>
         </div>
         <nav className="sidebar-nav" aria-label={`${portal} navigation`}>
-          {portalNav[portal].map((item) => { const Icon = item.icon; return <Link key={item.href} href={item.href} className={pathname === item.href ? "active" : ""} title={collapsed ? item.label : undefined} onClick={() => setMobileNav(false)}><Icon size={17} /><span>{item.label}</span></Link>; })}
+          {portalNav[portal].map((item) => { const Icon = item.icon; return <Link prefetch={false} key={item.href} href={item.href} className={pathname === item.href ? "active" : ""} title={collapsed ? item.label : undefined} onClick={(event) => { event.preventDefault(); setMobileNav(false); window.location.assign(item.href); }}><Icon size={17} /><span>{item.label}</span></Link>; })}
         </nav>
         <div className="sidebar-bottom">
           <button><HelpCircle size={17} /><span>Help</span></button>

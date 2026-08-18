@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
+import "./blueprint.css";
 import "@xyflow/react/dist/style.css";
 
 const geistSans = Geist({
