@@ -59,35 +59,30 @@ export default function Home() {
   return (
     <main className="landing">
       <section className="hero">
-        <header className="landing-nav" aria-label="Primary navigation">
-          <div className="nav-mark" aria-hidden="true">CA / 01</div>
-          <nav>
-            <a href="#platform">Platform</a>
-            <a href="#intelligence">Intelligence</a>
-            <a href="#about">About</a>
-            <Link className="nav-signin" href="/login">Sign in</Link>
-          </nav>
-        </header>
-
-        <div className="hero-copy">
-          <p className="eyebrow">AI TALENT INTELLIGENCE · ENTERPRISE IDP</p>
-          <h1>Align people, skills<br />and opportunity.</h1>
-          <p className="hero-summary">CoreAlign transforms workforce data into personalized development pathways, role-readiness intelligence and measurable career growth.</p>
+        <div className="hero-system-line" aria-hidden="true">
+          <span>COREALIGN / TALENT.OS</span>
+          <span>INDIVIDUAL → TEAM → WORKFORCE</span>
+          <span>SYS.01 / ACTIVE</span>
+        </div>
+        <div className="hero-identity">
+          <p className="eyebrow">TALENT INTELLIGENCE OPERATING SYSTEM</p>
+          <h1 className="hero-wordmark" aria-label="CoreAlign"><span>Core</span><span>Align</span></h1>
+          <p className="hero-summary">Align people, skills and opportunity.</p>
           <div className="hero-actions">
-            <Link className="button button-primary" href="/login">Explore CoreAlign <span aria-hidden="true">→</span></Link>
-            <Link className="button button-secondary" href="/hr">View workforce intelligence</Link>
+            <Link prefetch={false} className="button button-primary" href="/login" onClick={(event) => { event.preventDefault(); window.location.assign("/login"); }}>Explore CoreAlign <span aria-hidden="true">↗</span></Link>
+            <Link prefetch={false} className="button button-secondary" href="/hr" onClick={(event) => { event.preventDefault(); window.location.assign("/hr"); }}>View workforce intelligence <span aria-hidden="true">→</span></Link>
           </div>
         </div>
+        <div className="hero-coordinate" aria-hidden="true"><span>18.5204° N</span><span>73.8567° E</span></div>
+      </section>
 
+      <section className="talent-map-section" id="intelligence">
+        <header>
+          <div><span>02 / SIGNAL ARCHITECTURE</span><h2>Talent is not a profile.<br/>It is a living system.</h2></div>
+          <p>CoreAlign maps verified capability to roles, development actions and organizational opportunity—then shows the evidence behind every connection.</p>
+        </header>
         <TalentNetwork />
-
-        <div className="hero-brand" aria-label="CoreAlign">
-          <span className="brand-index">01</span>
-          <span className="brand-name">CoreAlign</span>
-          <span className="brand-caption">Talent Intelligence Operating System</span>
-        </div>
-
-        <div className="hero-metrics" id="intelligence">
+        <div className="hero-metrics">
           <div><strong>2,486</strong><span>Employees mapped</span></div>
           <div><strong>78%</strong><span>Average readiness</span></div>
           <div><strong>326</strong><span>Active IDPs</span></div>

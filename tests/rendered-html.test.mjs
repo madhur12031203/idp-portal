@@ -23,7 +23,7 @@ test("server-renders the CoreAlign landing experience", async () => {
   assert.match(html, /CoreAlign/);
   assert.match(html, /Align people, skills/);
   assert.match(html, /Talent Intelligence Operating System/);
-  assert.match(html, /og\.png/);
+  assert.match(html, /og-dark\.png/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
@@ -35,8 +35,10 @@ test("keeps the finished product modular and removes starter preview assets", as
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
   assert.match(page, /CoreAlign/);
+  assert.match(page, /href="\/login"/);
+  assert.match(page, /href="\/hr"/);
   assert.match(layout, /generateMetadata/);
-  assert.match(layout, /og\.png/);
+  assert.match(layout, /og-dark\.png/);
   assert.match(data, /Aarav Mehta/);
   assert.match(data, /Project Manager/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
