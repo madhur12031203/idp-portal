@@ -10,9 +10,16 @@ Drizzle support.
 
 ## Quick Start
 
-```bash
+```powershell
 npm install
 npm run dev
+```
+
+Then open the local URL printed in the terminal.
+
+To verify the production build:
+
+```powershell
 npm run build
 ```
 
@@ -91,8 +98,15 @@ actions tied to the current ChatGPT user. Leave public content anonymous.
 
 - `npm run dev`: start local development
 - `npm run build`: verify the vinext build output
+- `npm start`: start the production server after a successful build
 - `npm test`: build the starter and verify its rendered loading skeleton
 - `npm run db:generate`: generate Drizzle migrations after schema changes
+
+## Windows Notes
+
+The npm scripts use `scripts/run-vinext.mjs` so the Wrangler log path is set in a
+cross-platform way. You can run the normal `npm run dev` command from Windows
+PowerShell, Command Prompt, Git Bash, macOS, or Linux.
 
 ## Learn More
 

@@ -1,43 +1,44 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { AlertTriangle, ArrowRight, ChevronRight, Filter, Lightbulb, Search, X } from "lucide-react";
-import { employees, teamSkillLabels, teamSkills } from "@/data/mock-data";
-import { MiniBars, TeamScatter } from "@/components/visuals/Charts";
+import { ArrowRight, ClipboardCheck, FileSearch, UsersRound } from "lucide-react";
 
-function PageHeader({ title, subtitle, action }: { title: string; subtitle: string; action?: React.ReactNode }) { return <div className="page-header"><div><span>MANAGER · TEAM INTELLIGENCE</span><h1>{title}</h1><p>{subtitle}</p></div>{action}</div>; }
-function Metric({ label, value, trend }: { label: string; value: string; trend?: string }) { return <div className="metric"><span>{label}</span><strong>{value}</strong>{trend&&<small className="positive-text">{trend}</small>}</div>; }
+const titles: Record<string, string> = {
+  overview: "Team workspace",
+  team: "Team records",
+  skills: "Skill intelligence",
+  readiness: "Readiness review",
+  idps: "Development plans",
+  mentoring: "Mentoring",
+  talent: "Talent map",
+};
 
-function EmployeeDrawer({ name, onClose }: { name: string; onClose: () => void }) {
-  const e=employees.find(x=>x.name===name)||employees[0];
-  return <motion.aside className="context-drawer" role="dialog" aria-modal="true" aria-label={`${e.name} profile`} initial={{x:420}} animate={{x:0}} exit={{x:420}}><div className="drawer-head"><div><span>EMPLOYEE PROFILE</span><h2>{e.name}</h2></div><button className="icon-button" onClick={onClose} aria-label="Close employee profile"><X size={18}/></button></div><div className="drawer-body"><div className="profile-hero"><div className="avatar avatar--large">{e.initials}</div><div><h3>{e.name}</h3><p>{e.role}</p><span>{e.department} · 8.4 years</span></div></div><div className="profile-readiness"><div><span>TARGET ROLE</span><strong>{e.target}</strong></div><b>{e.readiness}% ready</b></div><h3>Capability snapshot</h3><MiniBars data={[{name:"Technical",value:84},{name:"Leadership",value:e.name==="Aarav Mehta"?61:74},{name:"Management",value:68},{name:"Experience",value:82}]}/><div className="profile-plan"><span>IDP PROGRESS</span><div><i style={{width:`${e.idp}%`}}/></div><strong>{e.idp}%</strong></div><div className="ai-insight"><Lightbulb size={16}/><p><strong>Development focus</strong>{e.gap} is the highest-impact current gap.</p></div><button className="primary-action full">Open full profile <ArrowRight size={15}/></button></div></motion.aside>;
+export function ManagerPortal({ section }: { section: string }) {
+  const title = titles[section] ?? titles.overview;
+
+  return (
+    <div className="page-stack">
+      <div className="page-header">
+        <div>
+          <span>REPORTING OFFICER VIEW</span>
+          <h1>{title}</h1>
+          <p>No team records are loaded. Connect the approved employee register to review staff development, skill gaps, and plan status.</p>
+        </div>
+        <button className="primary-action">Import employee register<ArrowRight size={15} /></button>
+      </div>
+      <div className="government-quick-actions">
+        <article className="panel"><UsersRound size={20} /><strong>Employee register</strong><span>Waiting for verified department records.</span></article>
+        <article className="panel"><ClipboardCheck size={20} /><strong>Approval queue</strong><span>No pending development approvals.</span></article>
+        <article className="panel"><FileSearch size={20} /><strong>Review history</strong><span>Audit records will appear after first review.</span></article>
+      </div>
+      <section className="empty-state-panel panel">
+        <div className="empty-state-icon"><UsersRound size={30} /></div>
+        <div>
+          <span className="section-kicker">NO TEAM DATA</span>
+          <h2>Connect official records to begin</h2>
+          <p>This page is intentionally empty because all demonstration names, scores, and charts have been removed.</p>
+        </div>
+        <button className="secondary-action">Open setup checklist<ArrowRight size={15} /></button>
+      </section>
+    </div>
+  );
 }
-
-function Heatmap({ onSelect }: { onSelect?: (name:string)=>void }) {
-  const rows=teamSkills;
-  return <div className="heatmap" role="grid" aria-label="Team skill proficiency heatmap"><div className="heatmap-row heatmap-head"><span>Employee</span>{teamSkillLabels.map(l=><b key={l}>{l}</b>)}</div>{rows.map(row=><button className="heatmap-row" role="row" key={row.employee} onClick={()=>onSelect?.(employees.find(e=>e.name.startsWith(row.employee))?.name||row.employee)}><span>{row.employee}</span>{row.scores.map((score,i)=><i key={i} style={{"--heat":`${score/5}`} as React.CSSProperties} title={`${row.employee} · ${teamSkillLabels[i]} · ${score}/5`}><em>{score}</em></i>)}</button>)}</div>;
-}
-
-function Overview() {
- const [selected,setSelected]=useState<string|null>(null);
- return <div className="page-stack"><PageHeader title="Team intelligence" subtitle="Understand capability, readiness and development across your team." action={<button className="primary-action">Review development priorities <ArrowRight size={15}/></button>}/>
- <div className="metric-strip panel manager-metrics"><Metric label="Team size" value="24"/><Metric label="Average readiness" value="74%" trend="+3% this quarter"/><Metric label="IDP completion" value="68%"/><Metric label="Critical gaps" value="7"/><Metric label="High potential" value="5"/></div>
- <div className="manager-overview"><section className="panel scatter-panel"><div className="panel-title"><div><span className="section-kicker">PERFORMANCE × READINESS</span><h2>Where does your team need development support?</h2></div><span className="quiet-badge">24 employees</span></div><TeamScatter onSelect={setSelected}/><p className="chart-note">Select an employee to inspect their target role, readiness, and active development plan.</p></section>
- <section className="panel alert-panel"><div className="panel-title"><div><span className="section-kicker">ACTIONABLE INSIGHTS</span><h2>Development alerts</h2></div></div>{[{title:"3 employees share a critical Project Governance gap",action:"Plan team workshop",level:"critical"},{title:"2 employees are >85% ready for Technical Lead",action:"Open succession review",level:"positive"},{title:"Mentor capacity is approaching limit",action:"Identify additional mentors",level:"warning"}].map(a=><button key={a.title} className="alert-item"><span className={`alert-indicator ${a.level}`}><AlertTriangle size={15}/></span><span><strong>{a.title}</strong><small>{a.action}</small></span><ChevronRight size={16}/></button>)}</section></div>
- <AnimatePresence>{selected&&<EmployeeDrawer name={selected} onClose={()=>setSelected(null)}/>}</AnimatePresence></div>;
-}
-
-function Team() { const [query,setQuery]=useState("");const [selected,setSelected]=useState<string|null>(null);const list=employees.filter(e=>e.name.toLowerCase().includes(query.toLowerCase())||e.role.toLowerCase().includes(query.toLowerCase())); return <div className="page-stack"><PageHeader title="My team" subtitle="A visual directory of role readiness, development progress, and current priorities."/><div className="directory-tools"><label><Search size={16}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search employees or roles"/></label><button className="secondary-action"><Filter size={15}/>Filters</button></div><div className="employee-list">{list.map(e=><button className="employee-row panel" key={e.name} onClick={()=>setSelected(e.name)}><div className="avatar">{e.initials}</div><div className="employee-main"><strong>{e.name}</strong><span>{e.role} → {e.target}</span></div><div className="employee-readiness"><span>Readiness</span><div><i style={{width:`${e.readiness}%`}}/></div><b>{e.readiness}%</b></div><div className="employee-readiness"><span>IDP</span><div><i className="sage" style={{width:`${e.idp}%`}}/></div><b>{e.idp}%</b></div><span className="gap-chip">{e.gap}</span><ChevronRight size={16}/></button>)}</div><AnimatePresence>{selected&&<EmployeeDrawer name={selected} onClose={()=>setSelected(null)}/>}</AnimatePresence></div>; }
-
-function Skills() { const [selected,setSelected]=useState<string|null>(null);return <div className="page-stack"><PageHeader title="Where are the team’s capability risks?" subtitle="Proficiency across critical capabilities, with employee-level drill-down and target-role context." action={<button className="secondary-action"><Filter size={15}/>Transmission Engineering</button>}/><section className="panel heatmap-panel"><div className="panel-title"><div><span className="section-kicker">TEAM SKILL HEATMAP</span><h2>Capability coverage by employee</h2></div><div className="heat-legend"><span>1 Low</span><i/><span>5 Strong</span></div></div><Heatmap onSelect={setSelected}/><div className="chart-table-alt">Values are shown numerically in every cell so proficiency is not communicated by color alone.</div></section><AnimatePresence>{selected&&<EmployeeDrawer name={selected} onClose={()=>setSelected(null)}/>}</AnimatePresence></div>;}
-
-function Readiness() { const [selected,setSelected]=useState<string|null>(null);return <div className="page-stack"><PageHeader title="How ready is the team for future roles?" subtitle="Explore readiness distribution and the factor constraints affecting career movement."/><section className="panel readiness-distribution"><div className="panel-title"><div><span className="section-kicker">TEAM READINESS DISTRIBUTION</span><h2>Seven employees can reach readiness within six months</h2></div></div><div className="stacked-readiness"><button style={{width:"29%"}}>Ready now <b>29%</b></button><button style={{width:"31%"}}>≤ 6 mo <b>31%</b></button><button style={{width:"24%"}}>6–12 mo <b>24%</b></button><button style={{width:"16%"}}>Long term <b>16%</b></button></div><div className="readiness-employees">{employees.slice(0,6).map(e=><button key={e.name} onClick={()=>setSelected(e.name)}><span>{e.name}</span><div><i style={{width:`${e.readiness}%`}}/></div><b>{e.readiness}%</b></button>)}</div></section><AnimatePresence>{selected&&<EmployeeDrawer name={selected} onClose={()=>setSelected(null)}/>}</AnimatePresence></div>; }
-
-function IDPs() { const [filter,setFilter]=useState("All"); const rows=employees.filter(e=>filter==="All"||filter==="At risk"&&e.idp<65||filter==="On track"&&e.idp>=65);return <div className="page-stack"><PageHeader title="Development portfolio" subtitle="Monitor active plans, shared priorities, and completion risk without ranking employees."/><section className="panel portfolio"><div className="filter-row">{["All","On track","At risk"].map(f=><button key={f} className={filter===f?"active":""} onClick={()=>setFilter(f)}>{f}</button>)}</div>{rows.map(e=><div className="portfolio-row" key={e.name}><div><strong>{e.name}</strong><span>{e.target}</span></div><div className="portfolio-progress"><i><b style={{width:`${e.idp}%`}}/></i><strong>{e.idp}%</strong></div><span className="gap-chip">{e.gap}</span><span className={e.idp<65?"status-risk":"status-good"}>{e.idp<65?"Attention":"On track"}</span></div>)}</section></div>;}
-
-function Mentoring() { return <div className="page-stack"><PageHeader title="Mentor capacity" subtitle="Balance expertise demand, available capacity, and development outcomes across the team."/><section className="panel capacity-panel"><div className="panel-title"><div><span className="section-kicker">EXPERTISE CAPACITY</span><h2>Where is mentor availability constrained?</h2></div></div>{[{name:"Project Leadership",used:14,total:18},{name:"Smart Grid",used:9,total:16},{name:"Cybersecurity",used:11,total:12},{name:"Stakeholder Management",used:8,total:15},{name:"AI / Analytics",used:7,total:10}].map(m=><div className="capacity-row" key={m.name}><div><strong>{m.name}</strong><span>{m.used} / {m.total} slots occupied</span></div><i><b style={{width:`${m.used/m.total*100}%`}}/></i><em>{m.total-m.used} open</em></div>)}</section></div>; }
-
-function Talent() { const [selected,setSelected]=useState<string|null>(null);const cells=["Emerging","Growth focus","High potential","Core contributor","Strong contributor","Future leader","Trusted expert","Critical specialist","Succession ready"]; return <div className="page-stack"><PageHeader title="Talent map" subtitle="A development-oriented view of performance and future readiness. Final talent decisions remain human-led."/><section className="panel ninebox compact-ninebox"><div className="matrix-y">POTENTIAL / READINESS</div><div className="matrix-grid">{cells.map((cell,i)=><div key={cell} className={`matrix-cell c${i}`}><span>{cell}</span>{employees.filter((_,j)=>j%9===i||j===i).slice(0,2).map(e=><button title={`${e.name} · ${e.readiness}% readiness`} key={e.name} onClick={()=>setSelected(e.name)}>{e.initials}</button>)}</div>)}</div><div className="matrix-x">CURRENT PERFORMANCE →</div></section><AnimatePresence>{selected&&<EmployeeDrawer name={selected} onClose={()=>setSelected(null)}/>}</AnimatePresence></div>; }
-
-export function ManagerPortal({section}:{section:string}){switch(section){case"team":return <Team/>;case"skills":return <Skills/>;case"readiness":return <Readiness/>;case"idps":return <IDPs/>;case"mentoring":return <Mentoring/>;case"talent":return <Talent/>;default:return <Overview/>;}}

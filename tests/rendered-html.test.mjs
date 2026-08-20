@@ -15,14 +15,14 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the CoreAlign landing experience", async () => {
+test("server-renders the government IDP landing experience", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
-  assert.match(html, /CoreAlign/);
-  assert.match(html, /Align people, skills/);
-  assert.match(html, /Talent Intelligence Operating System/);
+  assert.match(html, /Individual Development Plan Portal/);
+  assert.match(html, /Simple development planning/);
+  assert.match(html, /No demonstration employee data is loaded/);
   assert.match(html, /og-dark\.png/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
@@ -34,13 +34,14 @@ test("keeps the finished product modular and removes starter preview assets", as
     readFile(new URL("../data/mock-data.ts", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
-  assert.match(page, /CoreAlign/);
+  assert.match(page, /Individual Development Plan Portal/);
   assert.match(page, /href="\/login"/);
   assert.match(page, /href="\/hr"/);
   assert.match(layout, /generateMetadata/);
   assert.match(layout, /og-dark\.png/);
-  assert.match(data, /Aarav Mehta/);
-  assert.match(data, /Project Manager/);
+  assert.match(data, /employees: EmployeeRecord\[\] = \[\]/);
+  assert.match(data, /notifications: \{ title: string; note: string; icon: LucideIcon \}\[\] = \[\]/);
+  assert.doesNotMatch(data, /Senior Project Director|Smart Grid Specialist|Engineering Manager/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await assert.rejects(access(new URL("../app/_sites-preview", templateRoot)));
 });

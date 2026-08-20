@@ -21,20 +21,21 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host") || "localhost:3000";
   const protocol = requestHeaders.get("x-forwarded-proto") || (host.startsWith("localhost") ? "http" : "https");
   const image = new URL("/og-dark.png", `${protocol}://${host}`).toString();
+
   return {
-    title: "CoreAlign — Talent Intelligence Operating System",
-    description: "Personalized development pathways, role-readiness intelligence, and workforce capability planning.",
+    title: "IDP Portal - Government Development Planning",
+    description: "Official employee development planning, review, and HR administration workspace.",
     icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
     openGraph: {
-      title: "CoreAlign — Talent Intelligence Operating System",
-      description: "Align people, skills and opportunity through explainable role-readiness and development intelligence.",
+      title: "IDP Portal - Government Development Planning",
+      description: "Manage official employee development records, reviews, and approvals.",
       type: "website",
-      images: [{ url: image, width: 1731, height: 909, alt: "CoreAlign talent intelligence relationship map" }],
+      images: [{ url: image, width: 1731, height: 909, alt: "Government IDP portal" }],
     },
     twitter: {
       card: "summary_large_image",
-      title: "CoreAlign — Talent Intelligence Operating System",
-      description: "Align people, skills and opportunity through explainable role-readiness and development intelligence.",
+      title: "IDP Portal - Government Development Planning",
+      description: "Manage official employee development records, reviews, and approvals.",
       images: [image],
     },
   };
@@ -47,9 +48,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AmbientBackdrop />
         {children}
       </body>
